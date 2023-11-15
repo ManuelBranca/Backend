@@ -1,4 +1,5 @@
-const fs = require('fs')
+const express = require('express');
+const fs = require('fs');
 
 class ProductManager {
 
@@ -22,64 +23,67 @@ class ProductManager {
 		});
 	}
 
-		loadProductsFromFile() {
-			fs.readFile(this.path, 'utf8', (err, data) => {
-				if (!err) {
-					try {
-						this.productos = JSON.parse(data);
-						console.log('Productos cargados desde el archivo con éxito.');
-					} catch (error) {
-						console.error('Error al cargar el archivo:', error);
-					}
+	loadProductsFromFile() {
+		fs.readFile(this.path, 'utf8', (err, data) => {
+			if (!err) {
+				try {
+					this.productos = JSON.parse(data);
+					console.log('Productos cargados desde el archivo con éxito.');
+				} catch (error) {
+					console.error('Error al cargar el archivo:', error);
 				}
-			});
-		}
-
-		addProducts(producto) {
-			if (!this.productos.some(p => p.code === producto.code)) {
-				if (
-					producto.titulo &&
-					producto.descripcion &&
-					producto.price &&
-					producto.thumbnail &&
-					producto.code &&
-					producto.stock
-				) {
-
-					producto.id = this.nextProductId++;
-					this.productos.push(producto);
-					console.log("Producto agregado con éxito.");
-				} else {
-					console.log("Faltan campos obligatorios para agregar el producto.");
-				}
-			} else {
-				console.log("Ya existe un producto con el mismo código.");
 			}
-		}
+		});
+	}
 
-		removeProduct(id) {
-			const index = this.productos.findIndex(p => p.id === id);
-			if (index !== -1) {
-				this.productos.splice(index, 1);
-				console.log("Producto eliminado con éxito.");
+	addProducts(producto) {
+		if (!this.productos.some(p => p.code === producto.code)) {
+			if (
+				producto.titulo &&
+				producto.descripcion &&
+				producto.price &&
+				producto.thumbnail &&
+				producto.code &&
+				producto.stock
+			) {
+
+				producto.id = this.nextProductId++;
+				this.productos.push(producto);
+				console.log("Producto agregado con éxito.");
+				this.saveProductsToFile(); 
 			} else {
-				console.log("No se encontró un producto con el ID especificado.");
+				console.log("Faltan campos obligatorios para agregar el producto.");
 			}
-		}
-
-		getProducts() {
-			console.log(this.productos);
-		}
-
-		getProductsById(id) {
-			const producto = this.productos.find(p => p.id === id);
-			if (producto) {
-				console.log(producto);
-			} else {
-				console.log("No se encontró un producto con el ID especificado.");
-			}
+		} else {
+			console.log("Ya existe un producto con el mismo código.");
 		}
 	}
+
+	removeProduct(id) {
+		const index = this.productos.findIndex(p => p.id === id);
+		if (index !== -1) {
+			this.productos.splice(index, 1);
+			console.log("Producto eliminado con éxito.");
+			this.saveProductsToFile();
+		} else {
+			console.log("No se encontró un producto con el ID especificado.");
+		}
+	}
+
+	getProducts() {
+		return this.productos;
+	}
+
+	getProductsById(id) {
+		const producto = this.productos.find(p => p.id === id);
+		if (producto) {
+			return producto;
+		} else {
+			console.log("No se encontró un producto con el ID especificado.");
+			return null;
+		}
+	}
+}
 
 class Producto {
 	constructor(titulo, descripcion, price, thumbnail, code, stock) {
@@ -92,37 +96,48 @@ class Producto {
 	}
 }
 
+const app = express();
+const port = 3000;
 
-console.log("Comienzo!");
+
+app.use(express.json());
+
+
 const manager = new ProductManager('productos.json');
 
-console.log("=========================");
-console.log("Productos en el array (VACIO):");
-manager.getProducts();
 
-console.log("=========================");
-const producto1 = new Producto("Producto 1", "Descripción 1", 10.99, "imagen1.jpg", "P1", 100);
-const producto2 = new Producto("Producto 1", "Descripción 1", 10.99, "imagen1.jpg", "P1", 100);
-const producto3 = new Producto("Producto 3", "Descripción 2", 10.99, "imagen2.jpg", "P2", 100);
+app.get('/productos', (req, res) => {
+	const productos = manager.getProducts();
+	res.json(productos);
+});
 
-manager.addProducts(producto1);
-manager.addProducts(producto2);
-manager.addProducts(producto3);
 
-console.log("=========================");
-console.log("Productos en el array:");
-manager.getProducts();
+app.get('/productos/:id', (req, res) => {
+	const idProducto = parseInt(req.params.id);
+	const producto = manager.getProductsById(idProducto);
+	if (producto) {
+		res.json(producto);
+	} else {
+		res.status(404).json({ error: 'Producto no encontrado' });
+	}
+});
 
-console.log("=========================");
-console.log("Eliminar producto por ID");
-manager.removeProduct(0);
 
-console.log("=========================");
-console.log("Productos en el array después de eliminar:");
-manager.getProducts();
+app.post('/productos', (req, res) => {
+	const nuevoProducto = req.body;
+	manager.addProducts(nuevoProducto);
+	res.json({ mensaje: 'Producto agregado con éxito' });
+});
 
-console.log("=========================");
-console.log("Mostrar producto por ID:");
-manager.getProductsById(1);
 
-manager.saveProductsToFile('productos.json');
+app.delete('/productos/:id', (req, res) => {
+	const idProducto = parseInt(req.params.id);
+	manager.removeProduct(idProducto);
+	res.json({ mensaje: 'Producto eliminado con éxito' });
+});
+
+
+app.listen(port, () => {
+	console.log(`Servidor Express escuchando en el puerto ${port}`);
+});
+
