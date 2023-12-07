@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { CartManager } from "../cartManager";
+import { cartManager } from "../index.js";
 
 
 const cartsRouter = Router();
@@ -26,9 +26,11 @@ cartsRouter.get('/:cid', async (req,res)=>{
 cartsRouter.post('/:cid/products/:pid', async ( req, res)=>{
     const {cid,pid} = req.params;
     try{
-        await cartManager.addProductToCart(cid,pid)
+        await cartManager.addproductToCart(cid,pid)
         res.send('Producto agregado exitosamente')
     } catch (error){
         res.send('Error al intentar guardar prodcuto en el carrito')
     }
 })
+
+export default cartsRouter;

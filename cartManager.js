@@ -1,5 +1,5 @@
 import { promises as fs } from 'fs'
-import { v4 as uuidv4 } from 'uuidv4'
+import { v4 as uuidv4 } from 'uuid'
 
 export class CartManager {
     constructor() {
@@ -16,10 +16,10 @@ export class CartManager {
     getCartProducts = async (id) => {
         const carts = await this.getCarts()
 
-        const cart = carts.find(cart => cart.id === id);
+        const cart = carts.find(cart => cart.id == id);
 
         if (cart) {
-            return cart.products
+            return cart
         } else {
             console.log('Carrito no encontrado');
         }
@@ -38,25 +38,23 @@ export class CartManager {
     }
 
     addproductToCart = async (cart_id, product_id) => {
-        const carts = await this.getCarts()
-        const index = carts.findIndex(cart => cart.id === cart_id)
-
-        if (index !== -1) {
-            const cartProducts = await this.getCartProducts(cart_id)
-            const existingProdcutIndex = cartProducts.findeIndex(product => product.product_id === product_id)
-
-            if(existingProdcutIndex !== -1){
-                cartProducts[existingProdcutIndex].quantity = cartProducts[existingProdcutIndex].quantity + 1
-            }else {
-                cartProducts.push({product_id,quantity : 1})
-            }
-
-            carts[index].products = cartProducts
-
-            await fs.writeFile(this.path, JSON.stringify(carts))
-            console.log('Producto agregado con exito');
-        }else{
-            console.log('Carrito no encontrado');
+        // pido carrito
+        console.log("Entre a la funcion")
+        const cart = await this.getCartProducts(cart_id);
+        console.log(cart)
+        // guardo en una constante el resultado de buscar en el array de products
+        // un producto con la id enviada por parametro.
+        const productoEncotrado = cart.products.find(producto => producto.product_id == product_id);
+        console.log(productoEncotrado, "Producto Encontrado?")
+        // Si no se encontro, se agrega un objeto nuevo con una cantidad de 1
+        if (!productoEncotrado){
+        cart.products.push({product_id, quantity :1});
+        } else {
+        // sino utilizamos el producto encontrado para sumarle uno al producto existente en el array
+        productoEncotrado.quantity++;
         }
+        console.log(cart)
+        // Escribe el carrito en el archivo
+        await fs.writeFile(this.path,JSON.stringify([cart]));
     }
 }

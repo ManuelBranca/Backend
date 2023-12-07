@@ -1,26 +1,26 @@
 import { Router } from "express";
-import { productManager } from "..";
+import { productManager } from "../index.js";
 
-const prodcutsRouter = Router();
+const productsRouter = Router();
 
-prodcutsRouter.get('/', async (req,res) => {
+productsRouter.get('/', async (req,res) => {
     try{
         const {limit} = req.query;
         const products = await productManager.getProducts()
-
+        console.log(products)
         if(limit){
             const limitedProducts = products.slice(0,limit)
-            return res.json(limitedProducts)
+            res.json(limitedProducts)
         }
 
-        return res.json(products)
+        res.json(products)
     } catch (error){
         console.log(error);
         res.send('ERROR AL INTENTAR RECIBIR LOS PRODUCTOS')
     }
 })
 
-prodcutsRouter.get('/:pid', async (req,res) =>{
+productsRouter.get('/:pid', async (req,res) =>{
     const {pid} = req.params;
     try{
         const products = await productManager.getProductsById(pid)
@@ -32,7 +32,7 @@ prodcutsRouter.get('/:pid', async (req,res) =>{
 })
 
 
-prodcutsRouter.post('/', async(req,res)=>{
+productsRouter.post('/', async(req,res)=>{
     try{
         const {title, description, price, thumbnail, code, stock, status = true, category} = req.body;
         const response = await productManager.addProduct({title, description, price, thumbnail, code, stock, status, category})
@@ -43,7 +43,7 @@ prodcutsRouter.post('/', async(req,res)=>{
     }
 })
 
-prodcutsRouter.put ('/:pid',async (req,res)=>{
+productsRouter.put ('/:pid',async (req,res)=>{
     const {pid}=req.params
 
     try{
@@ -56,7 +56,7 @@ prodcutsRouter.put ('/:pid',async (req,res)=>{
     }
 })
 
-prodcutsRouter.delete('/:pid',async(req,res)=>{
+productsRouter.delete('/:pid',async(req,res)=>{
     const{pid}= req.params;
     try{
         await productManager.deleteProduct(pid)
@@ -68,4 +68,4 @@ prodcutsRouter.delete('/:pid',async(req,res)=>{
 })
 
 
-export {prodcutsRouter};
+export default productsRouter;
