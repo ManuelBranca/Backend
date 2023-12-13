@@ -34,8 +34,8 @@ productsRouter.get('/:pid', async (req,res) =>{
 
 productsRouter.post('/', async(req,res)=>{
     try{
-        const {title, description, price, thumbnail, code, stock, status = true, category} = req.body;
-        const response = await productManager.addProduct({title, description, price, thumbnail, code, stock, status, category})
+        console.log(req.body);
+        const response = await productManager.addProduct(req.body[0])
         res.json(response);
     }catch(error){
         console.log(error);
@@ -47,9 +47,8 @@ productsRouter.put ('/:pid',async (req,res)=>{
     const {pid}=req.params
 
     try{
-        const {title, description, price, thumbnail, code, stock, status = true, category} = req.body;
-        const response = await productManager.addProduct(pid,{title, description, price, thumbnail, code, stock, status, category})
-        res.json(response);
+        productManager.updateProduct(pid,req.body[0]);
+        res.send("PRODUCTO ACTUALIZADO");
     } catch(error){
         console.log(error);
         res.send(`ERROR AL INTENTAR AGREGAR EL PRODCUTO CON ID ${pid}`)

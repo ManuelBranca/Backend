@@ -7,15 +7,16 @@ export class ProductManager {
         this.products = [];
     }
 
-    addProduct = async ({ title, description, price, thumbnail, code, stock, status, category }) => {
+    addProduct = async (newProduct) => {
         const id = uuidv4()
-
-        let newProduct = { id, title, description, price, thumbnail, code, stock, status, category }
+        console.log(id)
+        newProduct.id = id;
+        console.log(newProduct);
 
         this.products = await this.getProducts()
         this.products.push(newProduct)
 
-        await fs.writeFile(this.path,JSON.stringify(this.products))
+        await fs.writeFile(this.path,JSON.stringify(this.products,null , "\t"))
 
         return newProduct;
     }
@@ -41,7 +42,7 @@ export class ProductManager {
 
     updateProduct = async (id,{...data})=>{
         const products = await this.getProducts()
-        const index = products.findeIndex(product => product.id === id)
+        const index = products.findIndex(product => product.id == id)
 
         if (index !== -1){
             products[index] = {id, ...data}
@@ -54,10 +55,10 @@ export class ProductManager {
 
     deleteProduct = async (id) => {
         const products = await this.getProducts()
-        const index = products.finindex(product => product.id === id) 
+        const index = products.findIndex(product => product.id == id) 
 
         if(index !== -1){
-            prodcuts.splice(index,1)
+            products.splice(index,1)
             await fs.writeFile(this.path, JSON.stringify(products))
         } else{
             console.log('Producto no encontrado')

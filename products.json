@@ -1,1 +1,20 @@
-[{"titulo":"Producto 3","descripcion":"Descripción 2","price":10.99,"thumbnail":"imagen2.jpg","code":"P2","stock":100,"id":1},{"id":"77a871bc-80bd-4181-adee-cf99a40d338f"}]
+[
+    {
+        "titulo": "mesa",
+        "descripcion": "mesa de cocina",
+        "price": 12,
+        "thumbnail": "imagen3.jpg",
+        "code": "P7",
+        "stock": 50,
+        "id": "d70945a6-2870-4ef2-be5b-1311c40d6b4d"
+    },
+    {
+        "titulo": "mesa",
+        "descripcion": "mesa de cocina",
+        "price": 12,
+        "thumbnail": "imagen3.jpg",
+        "code": "P7",
+        "stock": 50,
+        "id": "281f236b-06dc-4585-8dfc-f2a6de1c9584"
+    }
+]
