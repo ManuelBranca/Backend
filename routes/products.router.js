@@ -36,6 +36,7 @@ productsRouter.post('/', async(req,res)=>{
     try{
         console.log(req.body);
         const response = await productManager.addProduct(req.body[0])
+        console.log(response);
         res.json(response);
     }catch(error){
         console.log(error);
