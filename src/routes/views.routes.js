@@ -41,4 +41,22 @@ router.get("/products", (req, res) => {
     res.render("products.hbs", { title: "Productos", fileCss: "styles.css" })
 })
 
+router.get("/loginForm", (req,res) =>{
+    res.render("loginForm.hbs")
+})
+
+router.get("/registerForm", (req,res) =>{
+    res.render("registerForm.hbs")
+})
+
+router.get("/profile", (req,res) =>{
+    console.log(req.session)
+    if(req.session.user){
+    const {name,lastname,username,email} = req.session.user[0]
+    const user = {name,lastname,username,email}
+    return res.render("profile.hbs", { user })
+    } 
+    res.status(400).send("No estas autorizado")
+})
+
 export default router

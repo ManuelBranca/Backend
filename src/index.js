@@ -8,6 +8,9 @@ import __dirname from "./utils.js";
 import viewRouter from "./routes/views.routes.js"
 import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access";
 import Handlebars from "handlebars";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import usersRouter from "./routes/users.router.js";
 
 import { Server } from "socket.io";
 import mongoose from "mongoose";
@@ -21,12 +24,21 @@ const httpServer = app.listen(PORT, () =>
 export const productManager = new ProductManager();
 export const cartManager = new CartManager();
 
-
+console.log(__dirname)
 app.use(express.json())
-app.use('/api/productos', productsRouter)
-app.use('/api/carts', cartsRouter)
 app.use(express.urlencoded({ extended: true }))
+app.use(session({
+	store: MongoStore.create({
+		mongoUrl: "mongodb://127.0.0.1/ecommerce",
+		mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
+		ttl: 300
+	}),
+	secret: "ManuelBranca",
+	resave: false,
+	saveUninitialized: false
+}))
 
+app.use(express.static(`${__dirname}/public`))
 app.engine('hbs', handlebars.engine({
 	extname: 'hbs',
 	defaultLayout: 'main',
@@ -36,9 +48,11 @@ app.engine('hbs', handlebars.engine({
 app.set("view engine", "hbs");
 app.set("views", `${__dirname}/views`);
 
-app.use(express.static(`${__dirname}/public`))
 
 app.use("/", viewRouter);
+app.use('/api/productos', productsRouter)
+app.use('/api/carts', cartsRouter)
+app.use('/users', usersRouter)
 
 const socketServer = new Server(httpServer);
 
@@ -51,6 +65,8 @@ socketServer.on("connection", async (socket) => {
 		productManager.addProduct(data);
 	})
 })
+
+
 
 mongoose.connect("mongodb://127.0.0.1/ecommerce")
 	.then(console.log("Se pudo conectar."))
