@@ -16,7 +16,7 @@ infoRegister.addEventListener("submit", (e) => {
             console.log("se registro correctamente")
             window.location.replace("/loginForm")
         }
-        if(resultado.status == 400){
+        if(resultado.status == 401){
             alert("campo invalido")
         }
     })

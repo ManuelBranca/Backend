@@ -1,13 +1,11 @@
 import { Router } from "express";
+import productControler from "../dao/controllerDao/productController.js";
 
 const router = Router();
 
-router.get('/', (req, res) => {
-    res.render("index", {
-        title: "Mi titulo",
-        nombre: "Manuel",
-        fileCss: "styles.css"
-    })
+router.get('/', async (req, res) => {
+    const productList =  await productControler.getProducts()
+    res.render("index", {productList})
 })
 
 //form

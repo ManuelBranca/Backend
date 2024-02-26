@@ -1,6 +1,7 @@
 
 console.log("Entre a la carpeta login")
 const infoLogin = document.querySelector("#loginForm")
+const btnGitHub = document.getElementById("GitHub")
 
 infoLogin.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -16,11 +17,18 @@ infoLogin.addEventListener("submit", (e) => {
         console.log(resultado.status)
         if(resultado.status == 200){
             console.log("salio")
-            window.location.replace("/api/productos")
+            window.location.replace("/")
         }
         if(resultado.status == 400){
             alert("El usuario no existe")
         }
     })
-    
+})
+
+btnGitHub.addEventListener("click", (e) => {
+    e.preventDefault();
+    console.log("Entre")
+    fetch("/users/GitHub", {method:"GET", headers:{"Content-Type":"application/json"}})
+    .then("exit")
+
 })

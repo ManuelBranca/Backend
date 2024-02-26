@@ -1,6 +1,6 @@
 import { productModel } from "../models/productmodel.js";
 
-export default class productDao{
+class productDao{
     async addProduct(producto) {
         return await productModel.create(producto);
     }
@@ -22,3 +22,5 @@ export default class productDao{
     }
 }
 
+const productControler = new productDao()
+export default productControler

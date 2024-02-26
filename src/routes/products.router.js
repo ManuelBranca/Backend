@@ -1,11 +1,10 @@
 import { Router } from "express";
 import { productManager } from "../index.js";
-import productDao from "../dao/controllerDao/productController.js";
+import productoDao from "../dao/controllerDao/productController.js";
 import { productModel } from "../dao/models/productmodel.js";
 
 
 const productsRouter = Router();
-const productoDao = new productDao();
 
 productsRouter.get('/', async (req, res) => {
     try {

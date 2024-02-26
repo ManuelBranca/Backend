@@ -5,6 +5,10 @@ class userController {
         return await usersModel.find({email: email});
     }
 
+    async findUserByUserName(name){
+        return await usersModel.find({username:name});
+    }
+
     async addUser (user){
         return await usersModel.create(user);
     }

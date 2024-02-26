@@ -1,49 +1,51 @@
 import { Router } from "express";
 import userController from "../dao/controllerDao/usersController.js";
 import { authUser } from "../utils.js";
+import passport from "passport";
 const usersRouter = Router();
 
-usersRouter.post("/register", async (req, res) => {
-    const { name, lastname, username, email, password} = req.body;
-    const esta = await userController.findUserByEmail(email);
-    console.log(esta)
-    console.log(req.body)
-    if(esta[0] == null){
-        const user = {name, lastname, username, email, password};
-        await userController.addUser(user)
-        return res.send("Se creo el usuario")
+//register
+usersRouter.post("/register", passport.authenticate("register",
+    {
+        failureRedirect: "/users/failRegister",
+        successRedirect: "/loginForm"
     }
-    return res.status(400).send("El usuario ya existe")
+
+))
+
+usersRouter.get("/failRegister", async (req, res) => {
+    res.status(401).send("Error al registrarse, intentelo de nuevo")
 })
 
-usersRouter.post("/login", async (req, res) => {
-    console.log(req.body)
-    const {email, password} = req.body;
-    console.log(req.body);
-    const existe = await userController.findUserByEmail(email);
-    console.log(existe)
-    if(existe[0] == null){
-        console.log("el usuario no existe")
-        return res.status(400).send("El usuario no existe")
+//Login
+usersRouter.post("/login", passport.authenticate("login",
+    {
+        failureRedirect: "/users/failLogin",
+        successRedirect: "/"
     }
-    if(existe[0].password == password){
-        req.session.user = existe;
-        console.log("el usuario se logueo")
-        return res.status(200).send("/profile")
-    } else {
-        console.log("Credencial invalida")
-        res.status(400).send("Credencial invalida")
-    }
+))
+
+usersRouter.get("/failLogin", async (req, res) => {
+    console.log("error al ingresar")
+    res.status(400).send("Error al ingresar, intentelo de nuevo")
 })
+
 
 usersRouter.post("/logout", async (req, res) => {
-    if(req.session.user){
+    if (req.session.user) {
         req.session.destroy()
         return res.send("Usuario deslogueado")
     }
     res.send("No esta registrado")
 })
 
+usersRouter.get("/GitHub", passport.authenticate("github",{
+    scope:["user:email"]
+}))
 
+usersRouter.get("/githubcallback", passport.authenticate("github",{
+    failureRedirect: "/githubError",
+    successRedirect: "/"
+}))
 
 export default usersRouter;

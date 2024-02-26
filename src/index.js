@@ -11,9 +11,12 @@ import Handlebars from "handlebars";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import usersRouter from "./routes/users.router.js";
+import initializePassport from "./config/passportConfig.js";
+import cors from "cors";
 
 import { Server } from "socket.io";
 import mongoose from "mongoose";
+import passport from "passport";
 
 const PORT = 8080;
 const app = express();
@@ -27,6 +30,9 @@ export const cartManager = new CartManager();
 console.log(__dirname)
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+//habilito permisos para apps externas
+app.use(cors())
+//configuro mongo para que almacene las sesiones
 app.use(session({
 	store: MongoStore.create({
 		mongoUrl: "mongodb://127.0.0.1/ecommerce",
@@ -38,17 +44,24 @@ app.use(session({
 	saveUninitialized: false
 }))
 
+// le digo a mi aplicacion donde esta mi carpeta estatica
 app.use(express.static(`${__dirname}/public`))
+// config handlebars
 app.engine('hbs', handlebars.engine({
 	extname: 'hbs',
 	defaultLayout: 'main',
 	handlebars: allowInsecurePrototypeAccess(Handlebars)
 }))
 
+//configuracion de dirname
 app.set("view engine", "hbs");
 app.set("views", `${__dirname}/views`);
 
-
+//configuracion de passport
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
+// rutas
 app.use("/", viewRouter);
 app.use('/api/productos', productsRouter)
 app.use('/api/carts', cartsRouter)
