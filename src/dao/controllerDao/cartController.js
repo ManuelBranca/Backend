@@ -2,7 +2,8 @@ import { cartModel } from "../models/cartmodel.js";
 
 export default class cartDao {
     async firstCart(newCart){
-        return await cartModel.create(newCart);
+        const nuevoCart = await cartModel.create(newCart);
+        return nuevoCart._id
     }
 
     async addproductToCart(id,pid){

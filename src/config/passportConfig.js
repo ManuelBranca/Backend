@@ -5,23 +5,31 @@ import { usersModel } from "../dao/models/usermodel.js"
 import userControllerInst from "../dao/controllerDao/usersController.js"
 import { createHash } from "../utils.js"
 import { comparePassword } from "../utils.js"
+import cartDao from "../dao/controllerDao/cartController.js"
+import jwtStrategy from "passport-jwt"
+import { cookieExtractor } from "../utils.js"
 
 const localStrategies = passportLocal.Strategy
-
+const carritoDao = new cartDao(); 
+const JwtStrategy = jwtStrategy.Strategy 
+const ExtractJwt = jwtStrategy.ExtractJwt
 
 const initializePassport = () => {
     passport.use("register", new localStrategies(
         { passReqToCallback: true, usernameField: 'email' },
         async (req, username, password, done) => {
-            const { name, lastname, email } = req.body;
+            const { name, lastname, email, age } = req.body;
             const esta = await userControllerInst.findUserByEmail(email);
             console.log(esta)
             console.log(req.body)
+            const newCart = await carritoDao.firstCart();
             const user = {
                 name,
                 lastname,
                 username: (name + lastname) + Math.floor(Math.random()),
                 email,
+                age,
+                cartID:newCart,
                 password: createHash(password)
                 };
             console.log(user)
@@ -33,19 +41,15 @@ const initializePassport = () => {
         }
     ))
 
-    passport.use("login", new localStrategies(
-        { passReqToCallback: true, usernameField: 'email' },
-        async (req, username, password, done) => {
-            const { email } = req.body;
-            const user = await userControllerInst.findUserByEmail(email);
-            if (user[0] == null) {
-                return done("El usuario no existe", user)
-            }
-            if (comparePassword(password,user[0])) {
-                req.session.user = user;
-                return done(null, "Bienvenido!")
-            } else {
-                return done("Credencial invalida", user)
+    passport.use("jwt",  new JwtStrategy(
+        {
+            jwtFromRequest:ExtractJwt.fromExtractors([cookieExtractor]),
+            secretOrKey:"SoyUnSecreto"
+        },async (jwt_payload,done) =>{
+            try {
+                return done(null,jwt_payload.user);
+            } catch (error) {
+                return done(error)
             }
         }
     ))
@@ -82,6 +86,7 @@ const initializePassport = () => {
             }
         }
     ))
+
 
     passport.serializeUser((user, done) => {
         done(null, user)

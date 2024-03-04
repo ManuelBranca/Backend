@@ -1,6 +1,8 @@
 import path from "path";
 import { fileURLToPath } from "url";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken"
+import passport from "passport";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,3 +24,34 @@ export function authUser(req, res, next) {
     return res.send("No esta autorizado")
 }
 
+export function cookieExtractor(req){
+    let token = null;
+    console.log(req.cookies)
+    if(req.cookies && req){
+        token = req.cookies["tokenCookie"]
+        return token;
+    } else {
+        console.log("No se encontro la cookie")
+        return false
+    }
+}
+
+export function generateJwtToken(user){
+    return jwt.sign({user},"SoyUnSecreto",{expiresIn:"9000s"})
+}
+
+export function useStrategy(strategy){
+    return async(req,res,next) =>{
+        passport.authenticate(strategy,function(error,user,info){
+            console.log(user)
+            if(error){
+                next();
+            }
+            if(!user){
+                return res.status(400).send("No existe el usuario")
+            }
+            req.user = user
+            next();
+        })(req,res,next)
+    }
+}

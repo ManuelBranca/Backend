@@ -1,1 +1,11 @@
-[{"id":"04929119-515e-41d7-b039-0c23d0f174be","products":[{"product_id":"1","quantity":5}]}]
+[
+    {
+        "id": "04929119-515e-41d7-b039-0c23d0f174be",
+        "products": [
+            {
+                "product_id": "1",
+                "quantity": 5
+            }
+        ]
+    }
+]

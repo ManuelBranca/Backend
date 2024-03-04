@@ -2,6 +2,10 @@ import { Router } from "express";
 import userController from "../dao/controllerDao/usersController.js";
 import { authUser } from "../utils.js";
 import passport from "passport";
+import userControllerInst from "../dao/controllerDao/usersController.js";
+import { generateJwtToken } from "../utils.js"; 
+import { comparePassword } from "../utils.js";
+
 const usersRouter = Router();
 
 //register
@@ -18,12 +22,32 @@ usersRouter.get("/failRegister", async (req, res) => {
 })
 
 //Login
-usersRouter.post("/login", passport.authenticate("login",
-    {
-        failureRedirect: "/users/failLogin",
-        successRedirect: "/"
+usersRouter.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+    const user = await userControllerInst.findUserByEmail(email);
+    if (user[0] == null) {
+        return res.status(401).send("El usuario no existe")
     }
-))
+    if (comparePassword(password, user[0])) {
+        const tokenInfo = {
+            name: user.name,
+            lastname:user.lastname ,
+            username: user.username,
+            email: user.email,
+            age: user.age,
+            cartID: user.cartID,
+        }
+        const newToken = generateJwtToken(tokenInfo)
+        console.log(newToken)
+        res.cookie("tokenCookie",newToken,{
+            maxAge:"900000"
+            // httpOnly:true
+        })
+        res.status(200).send("Se logueo exitosamente")
+    } else {
+        res.status(401).send("Credencial invalida")
+    }
+})
 
 usersRouter.get("/failLogin", async (req, res) => {
     console.log("error al ingresar")
@@ -39,11 +63,11 @@ usersRouter.post("/logout", async (req, res) => {
     res.send("No esta registrado")
 })
 
-usersRouter.get("/GitHub", passport.authenticate("github",{
-    scope:["user:email"]
+usersRouter.get("/GitHub", passport.authenticate("github", {
+    scope: ["user:email"]
 }))
 
-usersRouter.get("/githubcallback", passport.authenticate("github",{
+usersRouter.get("/githubcallback", passport.authenticate("github", {
     failureRedirect: "/githubError",
     successRedirect: "/"
 }))

@@ -13,6 +13,7 @@ import MongoStore from "connect-mongo";
 import usersRouter from "./routes/users.router.js";
 import initializePassport from "./config/passportConfig.js";
 import cors from "cors";
+import cookieParser from "cookie-parser"
 
 import { Server } from "socket.io";
 import mongoose from "mongoose";
@@ -32,6 +33,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 //habilito permisos para apps externas
 app.use(cors())
+app.use(cookieParser("unSecreto"))
 //configuro mongo para que almacene las sesiones
 app.use(session({
 	store: MongoStore.create({

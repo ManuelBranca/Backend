@@ -1,4 +1,4 @@
-import mongoose, { Schema, model } from "mongoose";
+import mongoose, { Schema, SchemaTypes, model } from "mongoose";
 
 const userSchema = new Schema({ 
     name:{type:String,required:true},
@@ -6,6 +6,8 @@ const userSchema = new Schema({
     username:{type:String,required:true,unique:true},
     email:{type:String,required:false,unique:false},
     password:{type:String,required:true},
+    age:{type:Number,require:true},
+    cartID:{type:Schema.Types.ObjectId,ref:"carrito"},
     loggedBy:{type:String}
 });
 
