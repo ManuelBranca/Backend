@@ -1,10 +1,8 @@
 import express from "express";
-import { ProductManager } from "./controllers/productManager.js";
-import { CartManager } from "./controllers/cartManager.js";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import handlebars from "express-handlebars";
-import __dirname from "./utils.js";
+import __dirname from "./utils/utils.js";
 import viewRouter from "./routes/views.routes.js"
 import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access";
 import Handlebars from "handlebars";
@@ -19,25 +17,24 @@ import { Server } from "socket.io";
 import mongoose from "mongoose";
 import passport from "passport";
 
-const PORT = 8080;
+import variables from "./config/config.js"
+console.log(variables)
+const PORT = variables.PORT;
 const app = express();
 const httpServer = app.listen(PORT, () =>
 	console.log(`Server listening on port ${PORT}`)
 );
-
-export const productManager = new ProductManager();
-export const cartManager = new CartManager();
 
 console.log(__dirname)
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 //habilito permisos para apps externas
 app.use(cors())
-app.use(cookieParser("unSecreto"))
+app.use(cookieParser(variables.ClaveSecreta))
 //configuro mongo para que almacene las sesiones
 app.use(session({
 	store: MongoStore.create({
-		mongoUrl: "mongodb://127.0.0.1/ecommerce",
+		mongoUrl: variables.mongoUrl,
 		mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
 		ttl: 300
 	}),
@@ -83,7 +80,7 @@ socketServer.on("connection", async (socket) => {
 
 
 
-mongoose.connect("mongodb://127.0.0.1/ecommerce")
+mongoose.connect(variables.mongoUrl)
 	.then(console.log("Se pudo conectar."))
 	.catch((error) => { console.log(error, "No se pudo conectar.") })
 

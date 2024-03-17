@@ -3,6 +3,7 @@ import { fileURLToPath } from "url";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"
 import passport from "passport";
+import variables from "../config/config.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,7 +38,7 @@ export function cookieExtractor(req){
 }
 
 export function generateJwtToken(user){
-    return jwt.sign({user},"SoyUnSecreto",{expiresIn:"9000s"})
+    return jwt.sign({user}, variables.privateKey ,{expiresIn:"9000s"})
 }
 
 export function useStrategy(strategy){
@@ -48,7 +49,7 @@ export function useStrategy(strategy){
                 next();
             }
             if(!user){
-                return res.status(400).send("No existe el usuario")
+                return res.status(400).send("Permiso denegado!")
             }
             req.user = user
             next();

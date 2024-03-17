@@ -1,7 +1,6 @@
 import { Router } from "express";
-import productControler from "../dao/controllerDao/productController.js";
-import passport from "passport";
-import { useStrategy } from "../utils.js";
+import productControler from "../service/dao/productDao.js";
+import { useStrategy } from "../utils/utils.js";
 
 const router = Router();
 
