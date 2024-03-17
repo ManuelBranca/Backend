@@ -15,6 +15,6 @@ class userController {
 
 }
 
-const userControllerInst = new userController();
+const userDao = new userController();
 
-export default userControllerInst;
+export default userDao;

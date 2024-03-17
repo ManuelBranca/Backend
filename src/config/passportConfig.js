@@ -1,17 +1,17 @@
 import passport from "passport"
 import passportLocal from "passport-local"
 import GitHubStrategy from "passport-github2"
-import { usersModel } from "../dao/models/usermodel.js"
-import userControllerInst from "../dao/controllerDao/usersController.js"
-import { createHash } from "../utils.js"
-import { comparePassword } from "../utils.js"
-import cartDao from "../dao/controllerDao/cartController.js"
+import { usersModel } from "../service/models/usermodel.js"
+import userControllerInst from "../service/dao/usersDao.js"
+import { createHash } from "../utils/utils.js"
+import { carritoDao } from "../service/dao/cartDao.js"
 import jwtStrategy from "passport-jwt"
-import { cookieExtractor } from "../utils.js"
+import { cookieExtractor } from "../utils/utils.js"
+import variables from "./config.js"
+
 
 const localStrategies = passportLocal.Strategy
-const carritoDao = new cartDao(); 
-const JwtStrategy = jwtStrategy.Strategy 
+const JwtStrategy = jwtStrategy.Strategy
 const ExtractJwt = jwtStrategy.ExtractJwt
 
 const initializePassport = () => {
@@ -29,9 +29,9 @@ const initializePassport = () => {
                 username: (name + lastname) + Math.floor(Math.random()),
                 email,
                 age,
-                cartID:newCart,
+                cartID: newCart,
                 password: createHash(password)
-                };
+            };
             console.log(user)
             if (esta[0] == null) {
                 await userControllerInst.addUser(user)
@@ -41,13 +41,13 @@ const initializePassport = () => {
         }
     ))
 
-    passport.use("jwt",  new JwtStrategy(
+    passport.use("jwt", new JwtStrategy(
         {
-            jwtFromRequest:ExtractJwt.fromExtractors([cookieExtractor]),
-            secretOrKey:"SoyUnSecreto"
-        },async (jwt_payload,done) =>{
+            jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
+            secretOrKey: variables.privateKey
+        }, async (jwt_payload, done) => {
             try {
-                return done(null,jwt_payload.user);
+                return done(null, jwt_payload.user);
             } catch (error) {
                 return done(error)
             }
@@ -56,9 +56,9 @@ const initializePassport = () => {
 
     passport.use("github", new GitHubStrategy(
         {
-            clientID: "Iv1.a041e6d4f865c570",
-            clientSecret: "3d38ff83865451cbc3906116ede3849699e084c4",
-            callbackURL: "http://localhost:8080/users/githubcallback"
+            clientID: variables.clientID,
+            clientSecret: variables.clientSecret,
+            callbackURL: variables.callbackURL
         },
         async (accessToken, refreshToken, profile, done) => {
             console.log("Entre a la estrategia de github")
