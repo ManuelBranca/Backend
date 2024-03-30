@@ -8,6 +8,7 @@ const userSchema = new Schema({
     password:{type:String,required:true},
     age:{type:Number,require:true},
     cartID:{type:Schema.Types.ObjectId,ref:"carrito"},
+    role:{type:String,enum: ["user","admin","premium"], default: "user"},
     loggedBy:{type:String}
 });
 

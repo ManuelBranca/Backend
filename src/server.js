@@ -2,7 +2,7 @@ import express from "express";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import handlebars from "express-handlebars";
-import __dirname from "./utils/utils.js";
+import __dirname from "./dirname.js";
 import viewRouter from "./routes/views.routes.js"
 import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access";
 import Handlebars from "handlebars";

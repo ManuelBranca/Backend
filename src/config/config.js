@@ -11,7 +11,9 @@ let variables = {PORT: process.env.PORT,
     ClaveSecreta: process.env.ClaveSecreta,
     clientID: process.env.clientID,
     clientSecret: process.env.clientSecret,
-    callbackURL: process.env.callbackURL
+    callbackURL: process.env.callbackURL,
+    EmailAccount: process.env.EmailAccount,
+    AppPassword: process.env.AppPassword
 }
 
 process.env.mongoUrl

@@ -2,7 +2,8 @@ import { usersModel } from "../models/usermodel.js";
 
 class userController {
     async findUserByEmail(email){
-        return await usersModel.find({email: email});
+        const user = await usersModel.find({email: email});
+        return user[0]
     }
 
     async findUserByUserName(name){

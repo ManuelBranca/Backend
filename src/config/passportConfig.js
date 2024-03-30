@@ -4,7 +4,7 @@ import GitHubStrategy from "passport-github2"
 import { usersModel } from "../service/models/usermodel.js"
 import userControllerInst from "../service/dao/usersDao.js"
 import { createHash } from "../utils/utils.js"
-import { carritoDao } from "../service/dao/cartDao.js"
+import { cartService } from "../service/service.js"
 import jwtStrategy from "passport-jwt"
 import { cookieExtractor } from "../utils/utils.js"
 import variables from "./config.js"
@@ -22,7 +22,7 @@ const initializePassport = () => {
             const esta = await userControllerInst.findUserByEmail(email);
             console.log(esta)
             console.log(req.body)
-            const newCart = await carritoDao.firstCart();
+            const newCart = await cartService.createCart();
             const user = {
                 name,
                 lastname,
@@ -44,7 +44,7 @@ const initializePassport = () => {
     passport.use("jwt", new JwtStrategy(
         {
             jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
-            secretOrKey: variables.privateKey
+            secretOrKey: "soyUnSecreto"
         }, async (jwt_payload, done) => {
             try {
                 return done(null, jwt_payload.user);

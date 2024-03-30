@@ -1,12 +1,14 @@
-import userDao from "../service/dao/usersDao.js"
+import {userService} from "../service/service.js"
+import passport from "passport"
+import { comparePassword, generateJwtToken } from "../utils/utils.js"
 
 export const registerController = async (req, res) => {
-    passport.authenticate("register",
-        {
-            failureRedirect: "/users/failRegister",
-            successRedirect: "/loginForm"
-        }
-    )
+    try {
+        res.redirect("/loginForm")
+    } catch (error) {
+        console.log(error)
+        res.send("Hubo un error")
+    }
 }
 
 export const failRegister = ("/failRegister", async (req, res) => {
@@ -17,11 +19,12 @@ export const failRegister = ("/failRegister", async (req, res) => {
 export const loginController = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await userDao.findUserByid(email);
-        if (user[0] == null) {
+        const user = await userService.findUserByEmail(email);
+        console.log(user, "logincontroller user");
+        if (user == null) {
             return res.status(401).send("El usuario no existe")
         }
-        if (comparePassword(password, user[0])) {
+        if (comparePassword(password, user)) {
             const tokenInfo = {
                 name: user.name,
                 lastname: user.lastname,
@@ -29,9 +32,9 @@ export const loginController = async (req, res) => {
                 email: user.email,
                 age: user.age,
                 cartID: user.cartID,
+                role: user.role
             }
             const newToken = generateJwtToken(tokenInfo)
-            console.log(newToken)
             res.cookie("tokenCookie", newToken, {
                 maxAge: "900000"
                 // httpOnly:true
@@ -41,6 +44,7 @@ export const loginController = async (req, res) => {
         return res.status(401).send("Credencial invalida")
 
     } catch (error) {
+        console.log(error)
         res.status(500).send("Hubo un error")
     }
 }
@@ -71,5 +75,3 @@ export const githubCallback = async (req, res) => {
         successRedirect: "/"
     })
 }
-
-export default usersRouter;

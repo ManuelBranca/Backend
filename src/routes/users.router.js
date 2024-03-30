@@ -1,15 +1,14 @@
 import { Router } from "express";
+import {
+    registerController, failRegister, loginController,
+    failLogin, logoutController, githubLogin, githubCallback
+} from "../controllers/usersController.js";
 import passport from "passport";
-import userControllerInst from "../service/dao/usersDao.js";
-import { generateJwtToken } from "../utils/utils.js"; 
-import { comparePassword } from "../utils/utils.js";
-import { registerController, failRegister , loginController,
-    failLogin, logoutController, githubLogin, githubCallback } from "../controllers/usersController.js";
 
 const usersRouter = Router();
 
 //register
-usersRouter.post("/register", registerController)
+usersRouter.post("/register",passport.authenticate("register",{session: false}) , registerController)
 
 usersRouter.get("/failRegister", failRegister)
 

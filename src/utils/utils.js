@@ -1,14 +1,9 @@
-import path from "path";
-import { fileURLToPath } from "url";
+
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"
 import passport from "passport";
 import variables from "../config/config.js"
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-export default __dirname;
 
 export function createHash(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(10))
@@ -18,16 +13,8 @@ export function comparePassword(password, user) {
     return bcrypt.compareSync(password, user.password)
 }
 
-export function authUser(req, res, next) {
-    if (req.session.user) {
-        return next();
-    }
-    return res.send("No esta autorizado")
-}
-
 export function cookieExtractor(req){
     let token = null;
-    console.log(req.cookies)
     if(req.cookies && req){
         token = req.cookies["tokenCookie"]
         return token;
@@ -38,15 +25,14 @@ export function cookieExtractor(req){
 }
 
 export function generateJwtToken(user){
-    return jwt.sign({user}, variables.privateKey ,{expiresIn:"9000s"})
+    return jwt.sign({user}, "soyUnSecreto" ,{expiresIn:"9000s"})
 }
 
 export function useStrategy(strategy){
     return async(req,res,next) =>{
         passport.authenticate(strategy,function(error,user,info){
-            console.log(user)
             if(error){
-                next();
+                return next();
             }
             if(!user){
                 return res.status(400).send("Permiso denegado!")
@@ -56,3 +42,30 @@ export function useStrategy(strategy){
         })(req,res,next)
     }
 }
+
+export const authorization = (roles) => {
+    return async (req,res,next) =>{
+        console.log(req.user,"ACA")
+        if(!req.user){
+            return res.status(401).send("usuario no autorizado")
+        }
+        if(roles.includes(req.user.role)){
+
+            return next()
+        }
+        return res.status(403).send("No tiene el rol necesario")
+    }
+}
+
+export const purchaseAux = (carrito) => {
+    for(let i = 0;i < carrito.products.length;i++){
+        console.log(carrito.products[i])
+        if(carrito.products[i].product_id.stock < carrito.products[i].quantity){
+            return -1;
+        }
+        
+    }
+    return 1;
+    
+}
+

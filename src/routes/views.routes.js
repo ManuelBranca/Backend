@@ -2,6 +2,8 @@ import { Router } from "express";
 import productControler from "../service/dao/productDao.js";
 import { useStrategy } from "../utils/utils.js";
 
+
+
 const router = Router();
 
 router.get('/', async (req, res) => {

@@ -1,26 +1,33 @@
-import { productModel } from "../models/productmodel.js";
 
-class productDao{
-    async addProduct(producto) {
-        return await productModel.create(producto);
+
+class productRepository {
+    constructor(dao) {
+        this.dao = dao;
     }
 
-    async deleteProduct(id){
-        return await productModel.deleteOne({_id:id});
+    addProduct = (producto) => {
+        return this.dao.addProduct(producto)
     }
 
-    async updateProduct(id,campos){
-        return await productModel.updateOne({_id:id},{$set:campos})
+    deleteProduct = (id) => {
+        return this.dao.deleteProduct(id)
     }
 
-    async getProducts(){
-        return await productModel.find();
+    updateProduct = (id, campos) => {
+        return this.dao.updateProduct(id,campos)
     }
 
-    async getProductsById(id){
-        return await productModel.findById(id);
+    getProducts = () => {
+        return this.dao.getProducts()
+    }
+
+    getProductsById = (id) => {
+        return this.dao.getProductsById(id)
+    }
+
+    getAllProducts = (limit, page, query, sort) => {
+        return this.dao.getAllProducts(limit, page, query, sort)
     }
 }
 
-const productControler = new productDao()
-export default productControler
+export default productRepository
