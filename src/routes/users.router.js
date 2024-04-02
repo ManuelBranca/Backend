@@ -1,9 +1,10 @@
 import { Router } from "express";
 import {
     registerController, failRegister, loginController,
-    failLogin, logoutController, githubLogin, githubCallback
+    failLogin, logoutController, githubLogin, githubCallback, testError
 } from "../controllers/usersController.js";
 import passport from "passport";
+
 
 const usersRouter = Router();
 
@@ -23,5 +24,7 @@ usersRouter.post("/logout", logoutController)
 usersRouter.get("/GitHub", githubLogin)
 
 usersRouter.get("/githubcallback", githubCallback)
+
+usersRouter.get("/testlogger", testError)
 
 export default usersRouter;

@@ -2,8 +2,9 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"
 import passport from "passport";
-import variables from "../config/config.js"
-import {fakerES as faker} from "@faker-js/faker" 
+import variables, { enviroment } from "../config/config.js"
+import { fakerES as faker } from "@faker-js/faker"
+import winston from "winston"
 
 export function createHash(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(10))
@@ -71,13 +72,82 @@ export const purchaseAux = (carrito) => {
 
 export const createMockProducts = () => {
     return {
-        id: faker.database.mongodbObjectId() ,
-        title: faker.commerce.productName() ,
-        description:faker.commerce.productDescription() ,
-        price: faker.commerce.price({min: 1000, max:100000}),
-        code:faker.location.zipCode() ,
-        status:true ,
-        thumbnail:faker.image.urlLoremFlickr({width: 152, height:152}) ,
-        stock:faker.finance.amount({min: 1, max: 20})
+        id: faker.database.mongodbObjectId(),
+        title: faker.commerce.productName(),
+        description: faker.commerce.productDescription(),
+        price: faker.commerce.price({ min: 1000, max: 100000 }),
+        code: faker.location.zipCode(),
+        status: true,
+        thumbnail: faker.image.urlLoremFlickr({ width: 152, height: 152 }),
+        stock: faker.finance.amount({ min: 1, max: 20 })
     };
+}
+
+let customLevelOptions = {
+    levels: {
+        fatal: 0,
+        error: 1,
+        warning: 2,
+        info: 3,
+        http: 4,
+        debug: 5
+    },
+    colors: {
+        fatal: "red",
+        error: "black",
+        warning: "yellow",
+        info: "blue",
+        http: "white",
+        debug: "green",
+    },
+}
+
+winston.addColors(customLevelOptions.colors);
+
+export let logger = winston.createLogger({
+    levels: customLevelOptions.levels,
+    transports: [
+        new winston.transports.Console({
+            level: "info",
+            format: winston.format.combine(
+                winston.format.colorize(),
+                winston.format.simple()
+            )
+        }),
+        new winston.transports.File({
+            filename: "../logs/errorsLogger",
+            level: "error"
+        })
+    ]
+})
+
+export let loggerDev = winston.createLogger({
+    levels: customLevelOptions.levels,
+    transports: [
+        new winston.transports.Console({
+            level: "debug",
+            format: winston.format.combine(
+                winston.format.colorize(),
+                winston.format.simple()
+            )
+        }),
+        new winston.transports.File({
+            filename: "../logs/errorsLogger",
+            level: "error"
+        })
+    ]
+})
+
+
+
+export const winstonLogger = (req,res,next) => {
+    enviroment == "prot" ? req.logger = logger : req.logger = loggerDev
+    
+    req.logger.http(`${req.method}, en ${req.url},
+    ubicacion ${new Date().toLocaleDateString()}, a las ${new Date().toLocaleTimeString()}`)
+
+    req.logger.info(`${req.method}, en ${req.url},
+    ubicacion ${new Date().toLocaleDateString()}, a las ${new Date().toLocaleTimeString()}`)
+
+    next()
 }

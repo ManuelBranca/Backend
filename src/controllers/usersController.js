@@ -75,3 +75,13 @@ export const githubCallback = async (req, res) => {
         successRedirect: "/"
     })
 }
+
+export const testError = async (req,res) => {
+    req.logger.fatal("hubo un error fatal")
+    req.logger.error("logger de tipo error")
+    req.logger.warning("logger de tipo warning")
+    req.logger.info("logger de tipo info")
+    req.logger.http("logger de tipo http")
+    req.logger.debug("logger de tipo debug")
+    res.send("Se ejecuto un test de los loggers")
+}

@@ -1,6 +1,6 @@
 import dotenv from "dotenv"
 
-let enviroment = "prod"
+export let enviroment = "prod"
 dotenv.config({
     path: enviroment == "prod" ? "./config/.env" : "./config/.env.dev"
 })

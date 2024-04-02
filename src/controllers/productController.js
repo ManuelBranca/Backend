@@ -6,6 +6,7 @@ export const getProducts = async (req, res) => {
         const { limit, page, query, sort } = req.query;
         const products = await productService.getAllProducts(limit, page, query, sort)
         res.status(200).send(products)
+        req.logger.info(products.docs)
     } catch (error) {
         console.log(error);
         res.status(500).send('ERROR AL INTENTAR RECIBIR LOS PRODUCTOS')
