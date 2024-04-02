@@ -3,7 +3,7 @@ import productoDao from "../service/dao/productDao.js";
 import { productModel } from "../service/models/productmodel.js";
 import {
     getProducts, getProductsById, createProduct,
-    updateProduct,deleteProduct
+    updateProduct,deleteProduct, mockingProducts
 } from "../controllers/productController.js";
 import { authorization } from "../utils/utils.js";
 
@@ -19,5 +19,6 @@ productsRouter.put('/:pid', authorization(["admin"]), updateProduct)
 
 productsRouter.delete('/:pid', authorization(["admin"]), deleteProduct)
 
+productsRouter.post('/mockingProducts', mockingProducts)
 
 export default productsRouter;

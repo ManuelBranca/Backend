@@ -1,4 +1,5 @@
 import {productService} from "../service/service.js";
+import { createMockProducts } from "../utils/utils.js";
 
 export const getProducts = async (req, res) => {
     try {
@@ -52,5 +53,19 @@ export const deleteProduct = async (req, res) => {
     } catch (error) {
         console.log(error)
         res.status(500).send(`ERROR AL INTENTAR ELMININAR PRODUCTO CON ID ${pid}`)
+    }
+}
+
+export const mockingProducts = async (req,res) => {
+    try {
+        let products = []
+        for (let i = 0; i<100; i++) {
+            products.push(createMockProducts())
+            
+        }
+        res.status(200).json({payload: products})
+    } catch (error) {
+        console.log(error)
+        res.status(500)
     }
 }

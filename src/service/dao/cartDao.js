@@ -1,4 +1,7 @@
 import { purchaseAux } from "../../utils/utils.js";
+import customError from "../errors/customError.js";
+import EErrors from "../errors/error_dictionary.js";
+import { generateCartErrorInfo } from "../errors/message/cartErrors.js";
 import { cartModel } from "../models/cartmodel.js";
 import { productModel } from "../models/productmodel.js";
 import ticketModel from "../models/ticketModel.js";
@@ -72,6 +75,12 @@ class cartDao {
             console.log(carrito, "Soy el carrito")
             if(!carrito){
                 console.log("no existe el carrito")
+                customError.createError({
+                    name: "no existe carrito",
+                    cause: generateCartErrorInfo(carrito),
+                    message: "no existe un carrito asociado a tu cuenta",
+                    code: EErrors.INVALID_TYPES_ERROR
+                })
                 return "falso";
             }
             //verifico el stock

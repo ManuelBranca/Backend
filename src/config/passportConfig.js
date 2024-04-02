@@ -33,7 +33,7 @@ const initializePassport = () => {
                 password: createHash(password)
             };
             console.log(user)
-            if (esta[0] == null) {
+            if (esta == null) {
                 await userControllerInst.addUser(user)
                 return done(null, user)
             }
