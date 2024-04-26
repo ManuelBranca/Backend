@@ -69,7 +69,8 @@ export const addproductToCart = async (req, res) => {
 
 export const getCartById = async (req, res) => {
     try {
-        const { id } = req.params
+        const id = req.user.cartID
+        console.log(id)
         const cart = cartService.getCartById(id)
         return res.status(200).send(cart)
     } catch (error) {
@@ -92,7 +93,7 @@ export const delectProductInCart = async (req, res) => {
 
 export const vaciarCarrito = async (req, res) => {
     try {
-        const { cid } = req.params;
+        const cid = req.user.cartID;
         cartService.deleteAllProducts(cid)
         res.status(200).send("Se vacio el carrito")
     } catch (error) {

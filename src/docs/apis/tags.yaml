@@ -1,0 +1,6 @@
+tags: 
+  - name: productos
+    description: rutas para manejar productos
+
+  - name: carritos
+    description: rutas para manejar carritos

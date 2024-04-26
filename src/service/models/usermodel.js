@@ -9,7 +9,13 @@ const userSchema = new Schema({
     age:{type:Number,require:true},
     cartID:{type:Schema.Types.ObjectId,ref:"carrito"},
     role:{type:String,enum: ["user","admin","premium"], default: "user"},
-    loggedBy:{type:String}
+    loggedBy:{type:String},
+    documents: {type:[{
+        Identificacion:{type:Schema.Types.ObjectId,ref:"files"},
+        Comprobante_de_domicilio:{type:Schema.Types.ObjectId,ref:"files"},
+        Estado_de_cuenta:{type:Schema.Types.ObjectId,ref:"files"}
+    }]
+}
 });
 
 const usersModel = model("users", userSchema)

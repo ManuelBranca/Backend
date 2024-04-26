@@ -1,0 +1,107 @@
+paths:
+  /api/productos:
+    get:
+      summary: Obtiene todos los productos
+      tags: 
+        - productos
+      responses: 
+          "200":
+            description: productos obtenidos de mongo
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: "#components/schemas/product"
+          "404":
+            description: productos no encontrados
+    post:
+      summary: agregar un producto
+      tags: 
+        - productos
+      requestBody:
+        required: true
+      responses: 
+          "200":
+            description: se agrego
+            content:
+              application/json:
+                schema: 
+                  type: array
+                  items:
+                    $ref: "#components/schemas/product"
+          "400":
+            description: no se pudo agregar
+      components:
+        securitySchemes:
+          userAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
+            description: JWT token obtained upon user authentication.
+      security:
+        - userAuth: []
+    paths:
+      /api/productos/{pid}:
+        get:
+          summary: Obtiene producto por ID
+          tags: 
+            - productos
+          responses: 
+            "200":
+            description: se obtuvo un producto mediante el id recibido
+            content:
+              application/json:
+                schema: 
+                  type: array
+                  items:
+                    $ref: "#components/schemas/product"
+          "400":
+            description: no se pudo obtener
+    put:
+      summary: Actualizar Producto
+      tags: 
+        - productos
+      responses: 
+          "200":
+            description: Se actualizo el producto recibido
+            content:
+              application/json:
+                schema: 
+                  type: array
+                  items:
+                    $ref: "#components/schemas/product"
+          "400":
+            description: no se pudo actualizar
+    delete:
+      summary: Borrar producto
+      tags: 
+        - productos
+      responses: 
+          "200":
+            description: se borro el producto
+            content:
+              application/json:
+                schema: 
+                  type: array
+                  items:
+                    $ref: "#components/schemas/product"
+          "400":
+            description: no se pudo borrar
+      paths:
+        /api/productos/mockingProducts:
+          post:
+            summary: Crear lista de 100 productos
+            tags: 
+            - productos
+            responses: 
+              "200":
+            description: Se crea una lista de 100 productos aleatorios
+            content:
+              application/json:
+                schema: 
+                  type: array
+                  items:
+                    $ref: "#components/schemas/product"
+          "400":
+            description: no se pudo crear la lista

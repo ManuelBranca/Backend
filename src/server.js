@@ -18,6 +18,8 @@ import mongoose from "mongoose";
 import passport from "passport";
 import { logger } from "./utils/utils.js";
 import variables from "./config/config.js"
+import swaggerUiExpress from "swagger-ui-express"
+import { swaggerConfig } from "./utils/utils.js";
 
 const PORT = variables.PORT;
 const app = express();
@@ -62,6 +64,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(winstonLogger);
+app.use('/api/docs', swaggerUiExpress.serve , swaggerUiExpress.setup(swaggerConfig))
 
 // rutas
 app.use("/", viewRouter);

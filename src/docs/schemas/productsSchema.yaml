@@ -1,0 +1,79 @@
+components: 
+  schemas:
+    product: 
+      type: object
+      properties: 
+        _id: 
+          type: ObjectId
+          description: id del producto
+        title:
+          type: String
+          description: titulo del producto
+        description:
+          type: String
+          description: descripcion del producto
+        price:
+          type: Number
+          description: precio del producto
+        thumbnail: 
+          type: String
+          description: foto del producto
+        code:
+          type: String
+          description: codigo del producto
+        stock:
+          type: Number
+          description: stock del producto
+        status: 
+          type: Boolean
+          description: define si esta disponible o no
+      required: 
+        -title
+        -description
+        -price
+        -code
+        -stock
+        -status
+      example:
+        title: producto 10
+        description: silla
+        price: 10
+        code: T1
+        stock: 50
+        status: true
+  requestBodies:
+    Product:
+      type: object
+      properties:
+        title:
+          type: String
+          description: Product title
+        description:
+          type: String
+          description: Product description
+        code:
+          type: String
+          description: Product code (unique)
+        price:
+          type: Number
+          description: Product price
+        status:
+          type: Boolean
+          description: Product status
+        stock:
+          type: Number
+          description: Product stock
+        category:
+          type: String
+          description: Product category
+        thumbnails:
+          type: Array
+          description: Product thumbnails
+        example:
+          title: Luxurious Granite Sausages
+          description: Carbonite web goalkeeper gloves are ergonomically designed to give easy fit
+          code: 978-0-7325-7717-9
+          price: 790.00
+          status: true
+          stock: 18
+          category: Games

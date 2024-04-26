@@ -5,6 +5,9 @@ import passport from "passport";
 import variables, { enviroment } from "../config/config.js"
 import { fakerES as faker } from "@faker-js/faker"
 import winston from "winston"
+import swaggerJsDoc from "swagger-jsdoc"
+import __dirname from "../dirname.js";
+import multer from "multer"
 
 export function createHash(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(10))
@@ -46,7 +49,6 @@ export function useStrategy(strategy) {
 
 export const authorization = (roles) => {
     return async (req, res, next) => {
-        console.log(req.user, "ACA")
         if (!req.user) {
             return res.status(401).send("usuario no autorizado")
         }
@@ -140,9 +142,9 @@ export let loggerDev = winston.createLogger({
 
 
 
-export const winstonLogger = (req,res,next) => {
+export const winstonLogger = (req, res, next) => {
     enviroment == "prot" ? req.logger = logger : req.logger = loggerDev
-    
+
     req.logger.http(`${req.method}, en ${req.url},
     ubicacion ${new Date().toLocaleDateString()}, a las ${new Date().toLocaleTimeString()}`)
 
@@ -151,3 +153,36 @@ export const winstonLogger = (req,res,next) => {
 
     next()
 }
+
+export const swaggerOptions = {
+    definition: {
+        openapi: "3.0.1",
+        info: {
+            title: "ecommerce de manuel",
+            description: "endpoints documentation"
+        }
+    },
+    apis: [__dirname + "/docs/**/*.yaml"]
+}
+
+export const swaggerConfig = swaggerJsDoc(swaggerOptions)
+
+export const filesStorage = multer.diskStorage({
+    // ubicaion del directorio donde voy a guardar los archivos
+    destination: function (req, file, cb) {
+        cb(null, `${__dirname}/files`);
+    },
+    // el nombre que quiero que tengan los archivos que voy a subir
+    filename: function (req, file, cb) {
+        // console.log(file);
+        cb(null, `${Date.now()}-${file.originalname}`);
+    },
+});
+
+export const filesUploader = multer({
+    storage: filesStorage,
+    onError: function (err, next) {
+        console.log(err);
+        next();
+    },
+});

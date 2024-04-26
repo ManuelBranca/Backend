@@ -20,8 +20,6 @@ const initializePassport = () => {
         async (req, username, password, done) => {
             const { name, lastname, email, age } = req.body;
             const esta = await userControllerInst.findUserByEmail(email);
-            console.log(esta)
-            console.log(req.body)
             const newCart = await cartService.createCart();
             const user = {
                 name,
@@ -32,7 +30,6 @@ const initializePassport = () => {
                 cartID: newCart,
                 password: createHash(password)
             };
-            console.log(user)
             if (esta == null) {
                 await userControllerInst.addUser(user)
                 return done(null, user)
@@ -61,7 +58,6 @@ const initializePassport = () => {
             callbackURL: variables.callbackURL
         },
         async (accessToken, refreshToken, profile, done) => {
-            console.log("Entre a la estrategia de github")
             try {
                 console.log(profile)
                 const user = await userControllerInst.findUserByUserName(profile.username);
