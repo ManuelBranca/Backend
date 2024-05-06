@@ -4,7 +4,7 @@ import GitHubStrategy from "passport-github2"
 import { usersModel } from "../service/models/usermodel.js"
 import userControllerInst from "../service/dao/usersDao.js"
 import { createHash } from "../utils/utils.js"
-import { carritoDao } from "../service/dao/cartDao.js"
+import { cartService } from "../service/service.js"
 import jwtStrategy from "passport-jwt"
 import { cookieExtractor } from "../utils/utils.js"
 import variables from "./config.js"
@@ -20,9 +20,7 @@ const initializePassport = () => {
         async (req, username, password, done) => {
             const { name, lastname, email, age } = req.body;
             const esta = await userControllerInst.findUserByEmail(email);
-            console.log(esta)
-            console.log(req.body)
-            const newCart = await carritoDao.firstCart();
+            const newCart = await cartService.createCart();
             const user = {
                 name,
                 lastname,
@@ -32,8 +30,7 @@ const initializePassport = () => {
                 cartID: newCart,
                 password: createHash(password)
             };
-            console.log(user)
-            if (esta[0] == null) {
+            if (esta == null) {
                 await userControllerInst.addUser(user)
                 return done(null, user)
             }
@@ -44,7 +41,7 @@ const initializePassport = () => {
     passport.use("jwt", new JwtStrategy(
         {
             jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
-            secretOrKey: variables.privateKey
+            secretOrKey: "soyUnSecreto"
         }, async (jwt_payload, done) => {
             try {
                 return done(null, jwt_payload.user);
@@ -61,7 +58,6 @@ const initializePassport = () => {
             callbackURL: variables.callbackURL
         },
         async (accessToken, refreshToken, profile, done) => {
-            console.log("Entre a la estrategia de github")
             try {
                 console.log(profile)
                 const user = await userControllerInst.findUserByUserName(profile.username);

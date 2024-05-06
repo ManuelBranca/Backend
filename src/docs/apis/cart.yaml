@@ -1,0 +1,55 @@
+paths:
+  /api/carts/{cid}/products/{pid}:
+    post:
+      summary: Agrega un producto al carrito
+      parameters:
+        name: cid
+        in: path
+      responses: 
+          "200":
+            description: Se agrego un producto al carrito
+          "404":
+            description: no se pudo agregar
+    delete:
+      summary: Borra un producto del carrito
+      parameters:
+        name: cid
+        in: path
+      responses: 
+          "200":
+            description: Se borro un producto del carrito
+          "404":
+            description: no se pudo borrar     
+  paths: 
+    /getOne:
+      get:
+      summary: Obtiene un carrito en base al id
+      parameters:
+        name: cid
+        in: path
+      responses: 
+          "200":
+            description: Se obtuvo un carrito
+          "404":
+            description: no encontrado
+    paths:
+      /allProducts:
+        delete:
+      summary: Vacia el carrito
+      parameters:
+        name: cid
+        in: path
+      responses: 
+          "200":
+            description: se vacio el carrito del usuario
+          "404":
+            description: no se pudo vaciar   
+      paths:
+        /purchase:
+          post:
+            summary: Comprar producto
+            responses: 
+              "200":
+              description: Ticket de compra enviado y se vacio el carrito del usuario
+              "404":
+                description: no se pudo comprar

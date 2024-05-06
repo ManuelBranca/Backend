@@ -8,6 +8,7 @@ const productSchema = new Schema({
     thumbnail:String,
     code:{type:String,required:true,unique:true},
     stock:{type:Number,required:true},
+    owner:{type:String,ref:"users"},
     status:Boolean
 });
 

@@ -2,7 +2,7 @@ import express from "express";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import handlebars from "express-handlebars";
-import __dirname from "./utils/utils.js";
+import __dirname from "./dirname.js";
 import viewRouter from "./routes/views.routes.js"
 import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access";
 import Handlebars from "handlebars";
@@ -12,20 +12,22 @@ import usersRouter from "./routes/users.router.js";
 import initializePassport from "./config/passportConfig.js";
 import cors from "cors";
 import cookieParser from "cookie-parser"
-
+import { winstonLogger } from "./utils/utils.js"; 
 import { Server } from "socket.io";
 import mongoose from "mongoose";
 import passport from "passport";
-
+import { logger } from "./utils/utils.js";
 import variables from "./config/config.js"
-console.log(variables)
+import swaggerUiExpress from "swagger-ui-express"
+import { swaggerConfig } from "./utils/utils.js";
+
 const PORT = variables.PORT;
 const app = express();
 const httpServer = app.listen(PORT, () =>
-	console.log(`Server listening on port ${PORT}`)
+	logger.info(`Server listening on port ${PORT}`)
 );
 
-console.log(__dirname)
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 //habilito permisos para apps externas
@@ -60,6 +62,10 @@ app.set("views", `${__dirname}/views`);
 initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(winstonLogger);
+app.use('/api/docs', swaggerUiExpress.serve , swaggerUiExpress.setup(swaggerConfig))
+
 // rutas
 app.use("/", viewRouter);
 app.use('/api/productos', productsRouter)
@@ -70,7 +76,7 @@ const socketServer = new Server(httpServer);
 
 socketServer.on("connection", async (socket) => {
 
-	console.log("conexion exitosa")
+	logger.info("conexion exitosa")
 	const arrayDeProductos = await productManager.getProducts()
 	socket.emit("productos", arrayDeProductos);
 	socket.on("Agregar_Producto", (data) => {
@@ -81,7 +87,7 @@ socketServer.on("connection", async (socket) => {
 
 
 mongoose.connect(variables.mongoUrl)
-	.then(console.log("Se pudo conectar."))
-	.catch((error) => { console.log(error, "No se pudo conectar.") })
+	.then(logger.info("Se pudo conectar."))
+	.catch((error) => { logger.error(error, "No se pudo conectar.") })
 
 

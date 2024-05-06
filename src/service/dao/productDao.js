@@ -1,11 +1,15 @@
+import { sendEmail } from "../../utils/utils.js";
 import { productModel } from "../models/productmodel.js";
 
 class productDao {
-    async addProduct(producto) {
+    async addProduct(producto, email) {
+        producto.owner = email;
         return await productModel.create(producto);
     }
 
     async deleteProduct(id) {
+        const producto = await this.getProductsById(id)
+        await sendEmail(producto.owner, producto)
         return await productModel.deleteOne({ _id: id });
     }
 
