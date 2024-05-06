@@ -84,8 +84,6 @@ socketServer.on("connection", async (socket) => {
 	})
 })
 
-
-
 mongoose.connect(variables.mongoUrl)
 	.then(logger.info("Se pudo conectar."))
 	.catch((error) => { logger.error(error, "No se pudo conectar.") })
