@@ -2,7 +2,7 @@ import dotenv from "dotenv"
 
 export let enviroment = "prod"
 dotenv.config({
-    path: enviroment == "prod" ? "./config/.env" : "./config/.env.dev"
+    path: enviroment == "prod" ? "./src/config/.env" : "./src/config/.env.dev"
 })
 
 let variables = {PORT: process.env.PORT,
