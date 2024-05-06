@@ -11,7 +11,7 @@ infoLogin.addEventListener("submit", (e) => {
 
     data.forEach((value,key)=>(objeto[key]=value))
     console.log(objeto)
-    fetch("/users/login", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(objeto)})
+    fetch("https://backend-production-924a.up.railway.app/users/login", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(objeto)})
     .then((resultado)=>{
         console.log(resultado)
         console.log(resultado.status)
