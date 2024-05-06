@@ -14,6 +14,14 @@ class userRepository {
     addUser = (user) => {
         return this.dao.addUser(user)
     }
+
+    changeStatus = (email, status) =>{
+        return this.dao.changeStatus(email, status)
+    }
+
+    inactiveUsers = () => {
+        return this.dao.inactiveUsers()
+    }
 }
 
 export default userRepository;

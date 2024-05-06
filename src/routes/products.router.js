@@ -13,11 +13,11 @@ productsRouter.get('/', getProducts)
 
 productsRouter.get('/:pid', getProductsById)
 
-productsRouter.post('/', useStrategy("jwt"), authorization(["admin"]), createProduct)
+productsRouter.post('/', useStrategy("jwt"), authorization(["admin","premium"]), createProduct)
 
-productsRouter.put('/:pid', authorization(["admin"]), updateProduct)
+productsRouter.put('/:pid',useStrategy("jwt"), authorization(["admin"]), updateProduct)
 
-productsRouter.delete('/:pid', authorization(["admin"]), deleteProduct)
+productsRouter.delete('/:pid',useStrategy("jwt") , authorization(["admin","premium"]), deleteProduct)
 
 productsRouter.post('/mockingProducts', mockingProducts)
 

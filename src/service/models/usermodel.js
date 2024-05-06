@@ -8,8 +8,9 @@ const userSchema = new Schema({
     password:{type:String,required:true},
     age:{type:Number,require:true},
     cartID:{type:Schema.Types.ObjectId,ref:"carrito"},
-    role:{type:String,enum: ["user","admin","premium"], default: "user"},
+    role:{type:String,enum: ["user","admin","premium","owner"], default: "user"},
     loggedBy:{type:String},
+    last_connection:{type:String},
     documents: {type:[{
         Identificacion:{type:Schema.Types.ObjectId,ref:"files"},
         Comprobante_de_domicilio:{type:Schema.Types.ObjectId,ref:"files"},

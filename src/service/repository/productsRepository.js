@@ -5,8 +5,8 @@ class productRepository {
         this.dao = dao;
     }
 
-    addProduct = (producto) => {
-        return this.dao.addProduct(producto)
+    addProduct = (producto, email) => {
+        return this.dao.addProduct(producto, email)
     }
 
     deleteProduct = (id) => {

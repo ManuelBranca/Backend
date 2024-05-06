@@ -8,6 +8,8 @@ import winston from "winston"
 import swaggerJsDoc from "swagger-jsdoc"
 import __dirname from "../dirname.js";
 import multer from "multer"
+import nodemailer from "nodemailer"
+
 
 export function createHash(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(10))
@@ -186,3 +188,24 @@ export const filesUploader = multer({
         next();
     },
 });
+
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    port: 587,
+    auth: {
+        user: variables.EmailAccount,
+        pass: variables.AppPassword
+    }
+})
+
+export async function sendEmail(email, producto){
+    const mailOptions = {
+        from: variables.EmailAccount,
+        to: email,
+        subject: "Aviso de producto removido",
+        html: `<h1>Se ha eliminado tu producto</h1>
+        <p>El producto: ${producto.title}, se removio por la inactividad de la cuenta</p>
+        `
+    }
+    await transporter.sendMail(mailOptions)
+}

@@ -3,7 +3,8 @@ import {
     registerController, failRegister, loginController,
     failLogin, logoutController, githubLogin, githubCallback, testError,
     changeRole,
-    uploadFiles
+    uploadFiles,
+    inactiveUsers
 } from "../controllers/usersController.js";
 import passport from "passport";
 import { authorization, filesUploader, useStrategy } from "../utils/utils.js";
@@ -36,7 +37,7 @@ usersRouter.post("/login", loginController)
 usersRouter.get("/failLogin", failLogin)
 
 
-usersRouter.post("/logout", logoutController)
+usersRouter.post("/logout", useStrategy("jwt") ,logoutController)
 
 usersRouter.get("/GitHub", githubLogin)
 
@@ -47,5 +48,8 @@ usersRouter.get("/testlogger", testError)
 usersRouter.put("/changeRole/premium",useStrategy("jwt") ,authorization(["user","premium"]), changeRole)
 
 usersRouter.post("/uploadFiles", useStrategy("jwt"), filesUploader.fields(fields) , uploadFiles)
+
+usersRouter.delete("/inactiveUsers", useStrategy("jwt"),authorization(["admin"]), inactiveUsers)
+
 
 export default usersRouter;

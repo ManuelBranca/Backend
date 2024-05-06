@@ -27,7 +27,8 @@ export const getProductsById = async (req, res) => {
 
 export const createProduct = async (req, res) => {
     try {
-        const response = await productService.addProduct(req.body)
+        const {email} = req.user
+        const response = await productService.addProduct(req.body, email)
         res.status(200).send(response);
     } catch (error) {
         console.log(error);
@@ -49,6 +50,7 @@ export const updateProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
     try {
         const { pid } = req.params;
+        console.log(pid)
         await productService.deleteProduct(pid)
         res.status(200).send('PRODUCTO ELIMINADO EXITOSAMENTE')
     } catch (error) {

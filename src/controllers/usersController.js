@@ -64,6 +64,7 @@ export const loginController = async (req, res) => {
                 cartID: user.cartID,
                 role: user.role
             }
+            await userService.changeStatus(email, "online")
             const newToken = generateJwtToken(tokenInfo)
             res.cookie("tokenCookie", newToken, {
                 maxAge: "900000"
@@ -86,11 +87,15 @@ export const failLogin = async (req, res) => {
 
 
 export const logoutController = async (req, res) => {
-    if (req.session.user) {
-        req.session.destroy()
-        return res.send("Usuario deslogueado")
+    try {
+        const {email} = req.user;
+        await userService.changeStatus(email,"offline")
+        res.clearCookie("tokenCookie")
+        res.status(200).send("Deslogueado")  
+    } catch (error) {
+        res.clearCookie("tokenCookie")
+        res.status(500)
     }
-    res.status(500).send("No esta registrado")
 }
 
 export const githubLogin = async (req, res) => {
@@ -142,4 +147,14 @@ export const uploadFiles = async (req, res) => {
     user.save()
 
     res.status(200).send("Se subieron los archivos")
+}
+
+export const inactiveUsers = async (req,res) => {
+    try {
+        const deletedUsers = await userService.inactiveUsers()
+        res.send("La cantidad de usuarios eliminados es de: " + deletedUsers)
+    } catch (error) {
+        console.log(error)
+        res.status(500)
+    }
 }
