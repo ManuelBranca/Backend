@@ -44,8 +44,11 @@ export const firstCart = async (req, res) => {
 
 export const addproductToCart = async (req, res) => {
     try {
-        const { cid, pid } = req.params
-        const result = await cartService.addProduct(cid, pid)
+        console.log("entre al controller")
+        const { cartID } = req.user
+        const { pid } = req.params
+        console.log(pid)
+        const result = await cartService.addProduct(cartID, pid)
         console.log(result)
         switch (result) {
             case 1:
@@ -80,8 +83,9 @@ export const getCartById = async (req, res) => {
 
 export const delectProductInCart = async (req, res) => {
     try {
-        const { cid, pid } = req.params
-        const result = cartService.delectProductInCart(cid, pid)
+        const {cartID} = req.user
+        const { pid } = req.params
+        const result = cartService.delectProductInCart(cartID, pid)
         if (result) {
             return res.status(200).send("Se elimino el producto")
         }
@@ -107,7 +111,7 @@ export const purchase = async (req, res) => {
         const cid = req.user.cartID;
         const ticket = await cartService.purchase(cid, req.user.email)
         if (ticket == -1) {
-            return res.status(200).send("No se pueden agregar productos sin stock")
+            return res.status(201).send("No se pueden agregar productos sin stock")
         }
         await sendEmailTicket(req.user.email, ticket)
         res.status(200).send("Compra finalizada")

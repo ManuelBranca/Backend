@@ -1,0 +1,18 @@
+<div>
+    <h1>Tu carrito</h1>
+    {{#if carrito.products}}
+    {{#each carrito.products}}
+    <h2>{{this.product_id.title}}</h2>
+    <h3>Stock disponible: {{this.product_id.stock}}</h3>
+    <h3>Precio: {{this.product_id.price}}</h3>
+    <h3>Cantidad a comprar: {{this.quantity}}</h3>
+    <button id="deleteProduct" data-info={{this.product_id._id}}>Eliminar producto del carrito</button>
+    {{/each}}
+    <button id="purchase">Finalizar la compra</button>
+    {{else}}
+    <h2>El carrito esta vacio.</h2>
+    {{/if}}
+
+</div>
+
+<script src="/js/cartView.js"></script>

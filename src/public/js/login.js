@@ -8,10 +8,10 @@ infoLogin.addEventListener("submit", (e) => {
 
     const data = new FormData (infoLogin);
     const objeto = {}
-
+//https://backend-production-924a.up.railway.app/users/login
     data.forEach((value,key)=>(objeto[key]=value))
     console.log(objeto)
-    fetch("https://backend-production-924a.up.railway.app/users/login", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(objeto)})
+    fetch("/users/login", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(objeto)})
     .then((resultado)=>{
         console.log(resultado)
         console.log(resultado.status)

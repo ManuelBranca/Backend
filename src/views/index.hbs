@@ -1,11 +1,11 @@
 <div>
     <nav>
-        <a href="/loginForm">Registrate / inicia sesion</a>
         <button id="logout">logout</button>
+        <a href="/cartView">Ver mi carrito</a>
         <a href="/profile"><img src="https://i.pinimg.com/236x/2f/97/f0/2f97f05b32547f54ef1bdf99cd207c90.jpg" alt="Foto de perfil"></a>
     </nav>
     <h1>
-        Bienvenido a Lyon!
+        Bienvenido a LyonProducts!
     </h1>
 
     <div>
@@ -31,6 +31,7 @@
                 <td>{{this.status}}</td>
                 <td>{{this.category}}</td>
                 <td>{{this.stock}}</td>
+                <td><button class="addProduct" data-info={{this.id}}>Agregar producto al carrito</button><td>
             </tr>
             {{/each}}
         </tbody>

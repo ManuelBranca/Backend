@@ -1,12 +1,13 @@
 import { Router } from "express";
 import productControler from "../service/dao/productDao.js";
 import { useStrategy } from "../utils/utils.js";
+import { cartService } from "../service/service.js";
 
 
 
 const router = Router();
 
-router.get('/', async (req, res) => {
+router.get('/',useStrategy("jwt"), async (req, res) => {
     const productList = await productControler.getProducts()
     res.render("index", { productList })
 })
@@ -53,6 +54,13 @@ router.get("/registerForm", (req, res) => {
 router.get("/profile", useStrategy("jwt"), (req, res) => {
     const user = req.user
     return res.render("profile.hbs", { user })
+})
+
+router.get("/cartView", useStrategy("jwt"), async (req,res) => {
+    const user = req.user
+    const cart = await cartService.getCartById(user.cartID)
+    console.log(cart)
+    res.render("cartView.hbs", {carrito: cart})
 })
 
 export default router

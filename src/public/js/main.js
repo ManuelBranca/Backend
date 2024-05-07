@@ -8,3 +8,13 @@ button.addEventListener("click", async (e) => {
         window.location.replace("/loginForm")
     }
 })
+
+const addProduct = document.querySelectorAll(".addProduct")
+
+addProduct.forEach(button => {
+    const pid = button.dataset.info
+    button.addEventListener("click", (e) =>{
+        console.log("Entre al evento addproduct")
+        fetch(`/api/carts/products/${pid}`, {method:"POST", headers:{"Content-Type":"application/json"}})
+    })
+})

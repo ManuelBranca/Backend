@@ -11,14 +11,14 @@ const cartsRouter = Router();
 
 cartsRouter.post('/', useStrategy("jwt"), firstCart)
 
-cartsRouter.get('/getOne', useStrategy("jwt"), authorization(["user","admin"]), getCartById)
+cartsRouter.get('/getOne', useStrategy("jwt"), authorization(["user","admin", "premium"]), getCartById)
 
-cartsRouter.post('/:cid/products/:pid', useStrategy("jwt"), addproductToCart)
+cartsRouter.post('/products/:pid', useStrategy("jwt"), addproductToCart)
 
-cartsRouter.delete('/:cid/products/:pid', useStrategy("jwt"), delectProductInCart)
+cartsRouter.delete('/products/:pid', useStrategy("jwt"), delectProductInCart)
 
 cartsRouter.delete('/allProducts', useStrategy("jwt"), vaciarCarrito)
 
-cartsRouter.post('/purchase', useStrategy("jwt"), authorization(["user"]), purchase)
+cartsRouter.post('/purchase', useStrategy("jwt"), authorization(["user", "premium" ,"admin"]), purchase)
 
 export default cartsRouter;
